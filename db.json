@@ -1,0 +1,22 @@
+{
+  "usuarios": [
+    {
+      "id": "ed3e306addc8576903c4a014b06e1ccb",
+      "email": "inara.ralmeida@gmail.com",
+      "senha": "123456",
+      "nome": "INARA",
+      "sobrenome": "ALMEIDA"
+    }
+  ],
+  "categorias": [
+    {
+      "id": 1,
+      "nome": "Alimentação"
+    },
+    {
+      "id": 2,
+      "nome": "Moradia"
+    }
+  ],
+  "transacoes": []
+}
