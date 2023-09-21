@@ -2,377 +2,365 @@
 
 Esta documentação descreve os endpoints disponíveis na API Finanças+, incluindo os dados necessários, possíveis erros e exemplos de código.
 
-### Rota de Login
+## Endpoints de Usuário
 
-#### Endpoint: `/login`
+#### Login
+
+**Descrição:** Realiza a autenticação do usuário.
 
 **Método:** POST
 
-**Descrição:** Realiza o login de um usuário com base no email e senha fornecidos.
+**Endpoint:** `/login`
 
-**Dados Necessários:**
+**Parâmetros:**
+- Nenhum parâmetro é necessário na URL.
 
-- `email`: O email do usuário.
-- `X-Password`: A senha do usuário passada no cabeçalho.
+**Corpo da Solicitação (Body):**
+- `email` (string, obrigatório): O email do usuário.
+- `senha` deve ser passado no cabeçalho `X-Password`.
 
-**Possíveis Erros:**
+**Possíveis Saídas de Erro:**
+- Status 401 - Email não encontrado: Quando o email fornecido não corresponde a nenhum usuário.
+- Status 401 - Senha incorreta: Quando a senha fornecida não corresponde à senha do usuário.
 
-- 401 - Email não encontrado.
-- 401 - Senha incorreta.
+**Saída em Caso de Sucesso:**
+- Status 200: A autenticação foi bem-sucedida.
+- Corpo da resposta:
+  - `data` (objeto): Contém informações do usuário autenticado.
+  - `success` (boolean): Indica o sucesso da operação.
 
-**Exemplo de Requisição:**
-
+**Exemplo de Chamada:**
 ```javascript
-const resposta = await api.post(
-  "/login",
-  { 
-    email: "usuario@example.com" 
-  },
-  { 
-    headers: { 
-      "X-Password": "senha123"
-    } 
+
+axios.post('/login', {
+  email: 'usuario@example.com'
+}, {
+  headers: {
+    'X-Password': 'senha_secreta'
   }
-);
+})
+.then(response => {
+  console.log(response.data);
+})
+.catch(error => {
+  console.error(error.response.data);
+});
 ```
 
----
-
-### Cadastro de Usuário
-
-#### Endpoint: `/usuarios`
-
-**Método:** POST
+#### Cadastro de Usuários
 
 **Descrição:** Cadastra um novo usuário.
 
-**Dados Necessários:**
-
-- `email`: O email do usuário.
-- `nome`: O nome do usuário.
-- `sobrenome`: O sobrenome do usuário.
-- `X-Password`: A senha do usuário passada no cabeçalho.
-
-**Possíveis Erros:**
-
-- 400 - Email já cadastrado.
-
-**Exemplo de Requisição:**
-
-```javascript
-const resposta = await api.post(
-  "/usuarios",
-  { 
-    email: "novo@example.com", 
-    nome: "Novo", 
-    sobrenome: "Usuário" 
-  },
-  { 
-    headers: { 
-      "X-Password": "senha123" 
-    } 
-  }
-);
-```
-
----
-
-### Atualização de Senha de Usuário
-
-#### Endpoint: `/usuarios/:id/senha`
-
-**Método:** PUT
-
-**Descrição:** Atualiza a senha de um usuário.
-
-**Dados Necessários:**
-
-- `X-Password`: A senha atual do usuário passada no cabeçalho.
-- `X-OldPassword`: A senha atual do usuário passada no cabeçalho.
-
-**Possíveis Erros:**
-
-- 404 - Usuário não encontrado.
-- 400 - A nova senha deve ser diferente da senha atual.
-- 400 - A senha atual está incorreta.
-
-**Exemplo de Requisição:**
-
-```javascript
-const resposta = await api.put("/usuarios/1/senha", null, {
-  headers: {
-    "X-Password": "senha123",
-    "X-OldPassword": "123senha",
-  },
-});
-```
-
----
-
-### Exclusão de Usuário
-
-#### Endpoint: `/usuarios/:id`
-
-**Método:** DELETE
-
-**Descrição:** Exclui um usuário.
-
-**Dados Necessários:**
-
-- `X-Password`: A senha do usuário passada no cabeçalho.
-
-**Possíveis Erros:**
-
-- 404 - Usuário não encontrado.
-- 401 - Senha incorreta.
-
-**Exemplo de Requisição:**
-
-```javascript
-const resposta = await api.delete("/usuarios/1", {
-  headers: { 
-    "X-Password": "senha123" 
-  },
-});
-```
-
----
-
-### Cadastro de Transação
-
-#### Endpoint: `/transacoes`
-
 **Método:** POST
 
-**Descrição:** Cadastra uma nova transação.
+**Endpoint:** `/usuarios`
 
-**Dados Necessários:**
+**Parâmetros:**
+- Nenhum parâmetro é necessário na URL.
 
-- `nome`: Nome da transação.
-- `descricao`: Descrição da transação.
-- `categoria`: Categoria da transação.
-- `data`: Data da transação.
-- `tipo`: Tipo da transação (entrada ou saída).
-- `usuario`: ID do usuário relacionado à transação.
-- `X-Password`: A senha do usuário passada no cabeçalho.
+**Corpo da Solicitação (Body):**
+- `email` (string, obrigatório): O email do novo usuário.
+- `nome` (string, obrigatório): O nome do novo usuário.
+- `sobrenome` (string, obrigatório): O sobrenome do novo usuário.
+- `senha` deve ser passado no cabeçalho `X-Password`.
 
-**Possíveis Erros:**
+**Possíveis Saídas de Erro:**
+- Status 400 - Email já cadastrado: Quando o email já está em uso por outro usuário.
+- Status 400 - Todos os campos são obrigatórios: Quando algum dos campos obrigatórios está ausente no corpo da solicitação.
 
-- 400 - Todos os campos da transação são obrigatórios.
+**Saída em Caso de Sucesso:**
+- Status 201: O usuário foi criado com sucesso.
+- Corpo da resposta:
+  - `data` (objeto): Contém informações do novo usuário.
+  - `success` (boolean): Indica o sucesso da operação.
+  - `message` (string): Mensagem de sucesso.
 
-**Exemplo de Requisição:**
-
+**Exemplo de Chamada:**
 ```javascript
-const transacao = {
-  nome: "Compra de Livro",
-  descricao: "Livro de Ficção Científica",
-  categoria: "Livros",
-  data: "2023-08-30",
-  tipo: "saida",
-  usuario: 1,
-};
 
-const resposta = await api.post("/transacoes", transacao, {
-  headers: { 
-    "X-Password": "senha123" 
-  },
+axios.post('/usuarios', {
+  email: 'novo_usuario@example.com',
+  nome: 'Novo',
+  sobrenome: 'Usuário'
+}, {
+  headers: {
+    'X-Password': 'senha_secreta'
+  }
+})
+.then(response => {
+  console.log(response.data);
+})
+.catch(error => {
+  console.error(error.response.data);
 });
 ```
 
----
 
-### Obtenção de Transação por ID
+## Endpoints de Transações
 
-#### Endpoint: `/transacoes/:id`
+#### Todas as Transações de um Usuário
+
+**Descrição:** Obtém a lista de todas as transações de um usuário específico.
 
 **Método:** GET
 
-**Descrição:** Obtém uma transação pelo seu ID.
+**Endpoint:** `/usuario/:id/transacoes/`
 
-**Possíveis Erros:**
+**Parâmetros:**
+- `id` (string, obrigatório): O ID do usuário para o qual deseja listar as transações.
 
-- 404 - Transação não encontrada.
+**Possíveis Saídas de Erro:**
+- Status 404 - Usuário não encontrado: Quando o usuário com o ID especificado não existe.
 
-**Exemplo de Requisição:**
+**Saída em Caso de Sucesso:**
+- Status 200: As transações foram obtidas com sucesso.
+- Corpo da resposta:
+  - `success` (boolean): Indica o sucesso da operação.
+  - `data` (array): Contém a lista de todas as transações do usuário.
 
+**Exemplo de Chamada:**
 ```javascript
-const resposta = await api.get("/transacoes/1");
+
+axios.get('/usuario/123/transacoes', {
+  headers: {
+    'X-Password': 'senha_secreta'
+  }
+})
+.then(response => {
+  console.log(response.data);
+})
+.catch(error => {
+  console.error(error.response.data);
+});
+```
+---
+#### Transação Específica de um Usuário
+
+**Descrição:** Obtém os detalhes de uma transação específica de um usuário.
+
+**Método:** GET
+
+**Endpoint:** `/usuario/:id/transacao/:idTransacao`
+
+**Parâmetros:**
+- `id` (string, obrigatório): O ID do usuário para o qual deseja obter os detalhes da transação.
+- `idTransacao` (string, obrigatório): O ID da transação que deseja detalhar.
+
+**Possíveis Saídas de Erro:**
+- Status 404 - Usuário não encontrado: Quando o usuário com o ID especificado não existe.
+- Status 404 - Transação não encontrada: Quando a transação com o ID especificado não existe.
+
+**Saída em Caso de Sucesso:**
+- Status 200: Os detalhes da transação foram obtidos com sucesso.
+- Corpo da resposta:
+  - `success` (boolean): Indica o sucesso da operação.
+  - `data` (objeto): Contém os detalhes da transação específica.
+
+**Exemplo de Chamada:**
+```javascript
+
+axios.get('/usuario/123/transacao/456')
+.then(response => {
+  console.log(response.data);
+})
+.catch(error => {
+  console.error(error.response.data);
+});
+```
+---
+
+#### Endpoint de Listagem de Transações por Tipo
+
+**Descrição:** Obtém a lista de transações de um usuário específico com base no tipo de transação (entrada ou saída).
+
+**Método:** GET
+
+**Endpoint:** `/usuario/:id/transacoes/:tipo`
+
+**Parâmetros:**
+- `id` (string, obrigatório): O ID do usuário para o qual deseja listar as transações.
+- `tipo` (string, obrigatório): O tipo de transação desejado, que deve ser "entrada" ou "saída".
+
+**Possíveis Saídas de Erro:**
+- Status 404 - Usuário não encontrado: Quando o usuário com o ID especificado não existe.
+- Status 400 - Tipo de transação inválido: Quando o parâmetro `tipo` não é "entrada" nem "saída".
+
+**Saída em Caso de Sucesso:**
+- Status 200: As transações foram obtidas com sucesso.
+- Corpo da resposta:
+  - `success` (boolean): Indica o sucesso da operação.
+  - `data` (array): Contém a lista de transações do usuário com o tipo especificado.
+
+**Exemplo de Chamada:**
+```javascript
+// Exemplo de chamada usando Axios em JavaScript
+axios.get('/usuario/123/transacoes/entrada')
+.then(response => {
+  console.log(response.data);
+})
+.catch(error => {
+  console.error(error.response.data);
+});
 ```
 
 ---
+#### Criação de Nova Transação para um Usuário
 
-### Atualização de Transação por ID
+**Descrição:** Cria uma nova transação para um usuário.
 
-#### Endpoint: `/transacoes/:id`
+**Método:** POST
+
+**Endpoint:** `/usuario/:id/novatransacao`
+
+**Parâmetros:**
+- `id` (string, obrigatório): O ID do usuário para o qual deseja criar a nova transação.
+
+**Corpo da Solicitação (Body):**
+- `descricao` (string, obrigatório): A descrição da nova transação.
+- `categoria` (string, obrigatório): A categoria da nova transação.
+- `valor` (string, obrigatório): O valor da nova transação.
+- `tipo` (string, obrigatório): O tipo da nova transação (entrada ou saída).
+
+
+**Possíveis Saídas de Erro:**
+- Status 404 - Usuário não encontrado: Quando o usuário com o ID especificado não existe.
+- Status 400 - Todos os campos da transação são obrigatórios: Quando algum dos campos obrigatórios está ausente no corpo da solicitação.
+
+**Saída em Caso de Sucesso:**
+- Status 200: A nova transação foi criada com sucesso.
+- Corpo da resposta:
+  - `success` (boolean): Indica o sucesso da operação.
+  - `data` (objeto): Contém informações da nova transação criada.
+
+**Exemplo de Chamada:**
+```javascript
+
+axios.post('/usuario/123/novatransacao', {
+  descricao: 'Nova transação',
+  categoria: 'Alimentação',
+  valor: 50,
+  tipo: 'saída'
+})
+.then(response => {
+  console.log(response.data);
+})
+.catch(error => {
+  console.error(error.response.data);
+});
+```
+
+---
+#### Atualização de Transação
+
+**Descrição:** Atualiza uma transação específica de um usuário.
 
 **Método:** PATCH
 
-**Descrição:** Atualiza uma transação pelo seu ID.
+**Endpoint:** `/usuarios/:id/editar/:idTransacao`
 
-**Dados Necessários:**
+**Parâmetros:**
+- `id` (string, obrigatório): O ID do usuário.
+- `idTransacao` (string, obrigatório): O ID da transação a ser atualizada no usuário.
 
-- `nome`: Nome da transação.
-- `descricao`: Descrição da transação.
-- `categoria`: Categoria da transação.
-- `data`: Data da transação.
-- `tipo`: Tipo da transação (entrada ou saída).
+**Corpo da Solicitação (Body):**
+- `valor` (number, opcional): O novo valor da transação.
+- `descricao` (string, opcional): A nova descrição da transação.
+- `categoria` (string, opcional): A nova categoria da transação.
+- `data` (string, opcional): A nova data da transação.
+- `tipo` (string, opcional): O novo tipo da transação (entrada ou saída).
 
-**Possíveis Erros:**
+**Possíveis Saídas de Erro:**
+- Status 404 - Transação não encontrada: Quando a transação com o ID especificado não existe.
 
-- 404 - Transação não encontrada.
 
-**Exemplo de Requisição:**
+**Saída em Caso de Sucesso:**
+- Status 200: A transação foi atualizada com sucesso.
+- Corpo da resposta:
+  - `success` (boolean): Indica o sucesso da operação.
+  - `message` (string): Mensagem de sucesso.
 
+**Exemplo de Chamada:**
 ```javascript
-const atualizacao = {
-  nome: "Nova Descrição",
-  descricao: "Descrição atualizada",
-  categoria: "Outra Categoria",
-  data: "2023-08-31",
-  tipo: "entrada",
-};
 
-const resposta = await api.patch("/transacoes/1", atualizacao, {
-  headers: { 
-    "X-Password": "senha123" 
-  },
+axios.patch('/usuarios/123/editar/456', {
+  valor: 100,
+  descricao: 'Nova descrição',
+  categoria: 'Nova categoria',
+  data: '2023-09-19',
+  tipo: 'entrada'
+})
+.then(response => {
+  console.log(response.data);
+})
+.catch(error => {
+  console.error(error.response.data);
 });
 ```
-
 ---
+#### Exclusão de Transação
 
-### Exclusão de Transação por ID
-
-#### Endpoint: `/transacoes/:id`
+**Descrição:** Exclui uma transação específica de um usuário.
 
 **Método:** DELETE
 
-**Descrição:** Exclui uma transação pelo seu ID.
+**Endpoint:** `/usuario/:id/deletar/:idTransacao`
 
-**Dados Necessários:**
+**Parâmetros:**
+- `id` (string, obrigatório): O ID do usuário.
+- `idTransacao` (string, obrigatório): O ID da transação a ser excluída no usuário.
 
-- `userId`: ID do usuário relacionado à transação.
-- `X-Password`: A senha do usuário passada no cabeçalho.
+**Possíveis Saídas de Erro:**
+- Status 404 - Usuário não encontrado: Quando o usuário com o ID especificado não existe.
+- Status 404 - Transação não encontrada: Quando a transação com o ID especificado não existe.
 
-**Possíveis Erros:**
 
-- 404 - Transação não encontrada.
-- 404 - Usuário não encontrado.
-- 401 - Senha incorreta.
+**Saída em Caso de Sucesso:**
+- Status 200: A transação foi excluída com sucesso.
+- Corpo da resposta:
+  - `success` (boolean): Indica o sucesso da operação.
+  - `message` (string): Mensagem de sucesso.
 
-**Exemplo de Requisição:**
-
+**Exemplo de Chamada:**
 ```javascript
-const resposta = await api.delete("/transacoes/1", {
-  data: { 
-    userId: 1 
-  },
-  headers: {
-    "X-Password": "senha123" 
-  },
+
+axios.delete('/usuario/123/deletar/456')
+.then(response => {
+  console.log(response.data);
+})
+.catch(error => {
+  console.error(error.response.data);
 });
 ```
 
 ---
+#### Listagem de Categorias
 
-### Obtenção de Todas as Transações de um
-
-Usuário
-
-#### Endpoint: `/transacoes/usuario/:id`
+**Descrição:** Obtém a lista de todas as categorias disponíveis.
 
 **Método:** GET
 
-**Descrição:** Obtém todas as transações de um usuário específico pelo seu ID.
+**Endpoint:** `/categorias`
 
-**Possíveis Erros:**
+**Parâmetros:**
+- Nenhum parâmetro é necessário.
 
-- 404 - Usuário não encontrado.
 
-**Exemplo de Requisição:**
+**Saída em Caso de Sucesso:**
+- Status 200: As categorias foram obtidas com sucesso.
+- Corpo da resposta:
+  - `success` (boolean): Indica o sucesso da operação.
+  - `data` (array): Contém a lista de categorias.
 
+**Exemplo de Chamada:**
 ```javascript
-const resposta = await api.get("/transacoes/usuario/1");
-```
 
----
-
-### Obtenção de Todas as Transações do Tipo "Entrada" de um Usuário
-
-#### Endpoint: `/transacoes/usuario/:id/entrada`
-
-**Método:** GET
-
-**Descrição:** Obtém todas as transações do tipo "entrada" de um usuário específico pelo seu ID.
-
-**Possíveis Erros:**
-
-- 404 - Usuário não encontrado.
-
-**Exemplo de Requisição:**
-
-```javascript
-const resposta = await api.get("/transacoes/usuario/1/entrada");
-```
-
----
-
-### Obtenção de Todas as Transações do Tipo "Saída" de um Usuário
-
-#### Endpoint: `/transacoes/usuario/:id/saida`
-
-**Método:** GET
-
-**Descrição:** Obtém todas as transações do tipo "saída" de um usuário específico pelo seu ID.
-
-**Possíveis Erros:**
-
-- 404 - Usuário não encontrado.
-
-**Exemplo de Requisição:**
-
-```javascript
-const resposta = await api.get("/transacoes/usuario/1/saida");
-```
-
----
-
-### Cadastro de Categoria
-
-#### Endpoint: `/categorias`
-
-**Método:** POST
-
-**Descrição:** Cadastra uma nova categoria.
-
-**Dados Necessários:**
-
-- `categoria`: Nome da categoria.
-
-**Possíveis Erros:**
-
-- 400 - A categoria especificada já existe.
-
-**Exemplo de Requisição:**
-
-```javascript
-const resposta = await api.post("/categorias", { 
-  categoria: "Nova Categoria" 
+axios.get('/categorias')
+.then(response => {
+  console.log(response.data);
+})
+.catch(error => {
+  console.error(error.response.data);
 });
 ```
 
----
 
-### Obtenção de Todas as Categorias
-
-#### Endpoint: `/categorias`
-
-**Método:** GET
-
-**Descrição:** Obtém todas as categorias cadastradas.
-
-**Exemplo de Requisição:**
-
-```javascript
-const resposta = await api.get("/categorias");
-```
