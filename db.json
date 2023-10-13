@@ -17,7 +17,7 @@
         },
         {
           "id": "29de5d7cf164c46690b40d5fe9e4fd3a",
-          "descricao": "asdasd",
+          "descricao": "passagem do mês",
           "categoria": "transporte",
           "valor": "250",
           "data": "15/09/2023",
@@ -25,51 +25,25 @@
         },
         {
           "id": "08566a7e4accbe173e54c0bfaba2d1c9",
-          "descricao": "asdgahsdgh",
-          "categoria": "salário",
-          "valor": "1500",
+          "descricao": "mercadinho",
+          "categoria": "alimentação",
+          "valor": "500",
           "data": "19/09/2023",
           "tipo": "saída"
-        }
-      ]
-    },
-    {
-      "id": "9d193a6679dbb85d867140ce2f0faa71",
-      "email": "teste_usuario@gmail.com",
-      "senha": "123456789",
-      "nome": "usuario",
-      "sobrenome": "teste",
-      "transacoes": [
+        },
         {
           "id": "c5bca242f0279f447ea4903419a5f8d9",
-          "descricao": "recebi o aluguel da casa",
+          "descricao": "paguei aluguel da casa",
           "categoria": "aluguel",
           "valor": "1500",
           "data": "19/09/2023",
-          "tipo": "entrada"
-        }
-      ]
-    },
-    {
-      "id": "4d9558d4560f89e87c998f22cf8a2c10",
-      "email": "usuarioteste@gmail.com",
-      "senha": "123456789",
-      "nome": "teste",
-      "sobrenome": "usuario",
-      "transacoes": []
-    },
-    {
-      "id": "175fabe9e3d03d464d2d5a748aef7b89",
-      "email": "leandrolara@gmail.com",
-      "senha": "senhasecreta1",
-      "nome": "Lara",
-      "sobrenome": "Leandro",
-      "transacoes": [
+          "tipo": "saída"
+        },
         {
           "id": "5bcfd0e9f96ff9592f60024921706c86",
           "descricao": "cuidar da juju",
           "categoria": "freelancer",
-          "valor": "1500",
+          "valor": "500",
           "data": "19/09/2023",
           "tipo": "entrada"
         },
@@ -80,24 +54,7 @@
           "valor": "5000",
           "data": "19/09/2023",
           "tipo": "entrada"
-        }
-      ]
-    },
-    {
-      "id": "b5f6ac934e2fe58110f5d1dc2633e7c8",
-      "email": "inaraalmeida@gmail.com",
-      "senha": "123456",
-      "nome": "inara",
-      "sobrenome": "almeida",
-      "transacoes": []
-    },
-    {
-      "id": "b87329cc0a758876328f76fa3f9282f2",
-      "email": "inaralmeida@gmail.com",
-      "senha": "1234578",
-      "nome": "inara",
-      "sobrenome": "almeida",
-      "transacoes": [
+        },
         {
           "id": "5015d4f2c035143c25e4275b777b9a15",
           "descricao": "restituição",
